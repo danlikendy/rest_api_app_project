@@ -1,6 +1,6 @@
 # Organizations Directory API
 
-REST API приложение для справочника организаций, зданий и видов деятельности.
+REST API приложение для справочника организаций, зданий и видов деятельности
 
 ## Описание
 
@@ -35,13 +35,13 @@ rest_api_app_project/
 │       ├── __init__.py
 │       └── database.py    # Настройка БД
 ├── alembic/               # Миграции
-├── main.py               # Основное приложение
-├── requirements.txt      # Зависимости
-├── Dockerfile           # Docker образ
-├── docker-compose.yml   # Docker Compose
-├── seed_data.py         # Тестовые данные
-├── init_db.py          # Инициализация БД
-└── README.md           # Документация
+├── main.py                # Основное приложение
+├── requirements.txt       # Зависимости
+├── Dockerfile             # Docker образ
+├── docker-compose.yml     # Docker Compose
+├── seed_data.py           # Тестовые данные
+├── init_db.py             # Инициализация БД
+└── README.md              # Документация
 ```
 
 ## Быстрый старт с Docker
