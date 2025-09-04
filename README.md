@@ -1,225 +1,142 @@
 # Organizations Directory API
 
-REST API приложение для справочника организаций, зданий и видов деятельности
+REST API для справочника организаций с поддержкой зданий и видов деятельности.
 
 ## Описание
 
-Приложение предоставляет API для управления справочником организаций с поддержкой:
-- Организаций с множественными номерами телефонов
-- Зданий с географическими координатами
-- Иерархических видов деятельности (до 3 уровней вложенности)
-- Поиска по различным критериям
+Приложение предоставляет API для работы с:
+- **Организации** - название, телефоны, здание, виды деятельности
+- **Здания** - адрес, географические координаты
+- **Виды деятельности** - иерархическая структура (до 3 уровней)
 
-## Технологический стек
+## Быстрый старт
 
-- **FastAPI** - веб-фреймворк для создания API
-- **Pydantic** - валидация данных
-- **SQLAlchemy** - ORM для работы с базой данных
-- **Alembic** - миграции базы данных
-- **PostgreSQL** - база данных
-- **Docker** - контейнеризация
-
-## Структура проекта
-
-```
-rest_api_app_project/
-├── app/
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── models.py      # SQLAlchemy модели
-│   │   └── schemas.py     # Pydantic схемы
-│   ├── core/
-│   │   ├── __init__.py
-│   │   └── config.py      # Конфигурация
-│   └── db/
-│       ├── __init__.py
-│       └── database.py    # Настройка БД
-├── alembic/               # Миграции
-├── main.py                # Основное приложение
-├── requirements.txt       # Зависимости
-├── Dockerfile             # Docker образ
-├── docker-compose.yml     # Docker Compose
-├── seed_data.py           # Тестовые данные
-├── init_db.py             # Инициализация БД
-└── README.md              # Документация
-```
-
-## Быстрый старт с Docker
-
-### 1. Клонирование и подготовка
-
+### 1. Запуск сервера
 ```bash
-git clone https://github.com/danlikendy/rest_api_app_project
-cd rest_api_app_project
+python3 simple_app.py
 ```
 
-### 2. Запуск с Docker Compose
-
-```bash
-# Запуск всех сервисов
-docker-compose up --build
-
-# Или в фоновом режиме
-docker-compose up -d --build
-```
-
-### 3. Инициализация базы данных
-
-```bash
-# Выполнить миграции и заполнить тестовыми данными
-docker-compose exec app python init_db.py
-```
-
-### 4. Доступ к API
-
-- **API документация (Swagger UI)**: http://localhost:8000/docs
-- **API документация (ReDoc)**: http://localhost:8000/redoc
-- **API базовый URL**: http://localhost:8000
-
-## Ручная установка (без Docker)
-
-### 1. Установка зависимостей
-
-```bash
-# Создание виртуального окружения
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# или
-venv\Scripts\activate     # Windows
-
-# Установка зависимостей
-pip install -r requirements.txt
-```
-
-### 2. Настройка базы данных
-
-```bash
-# Создание базы данных PostgreSQL
-createdb organizations_db
-
-# Настройка переменных окружения
-export DATABASE_URL="postgresql://user:password@localhost:5432/organizations_db"
-export API_KEY="your-secret-api-key-here"
-```
-
-### 3. Инициализация
-
-```bash
-# Создание миграций и заполнение данными
-python init_db.py
-```
-
-### 4. Запуск приложения
-
-```bash
-# Запуск сервера
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
+### 2. Открыть интерфейс
+Откройте `advanced_test.html` в браузере для тестирования API.
 
 ## API Endpoints
 
-### Аутентификация
-
-Все запросы требуют заголовок `X-API-Key` с секретным ключом.
+**Base URL:** `http://localhost:8000` (или ваш IP)  
+**API Key:** `api-key`
 
 ### Организации
 
-- `GET /organizations` - Список всех организаций
-- `GET /organizations/{id}` - Информация об организации по ID
-- `GET /organizations/building/{building_id}` - Организации в здании
-- `GET /organizations/activity/{activity_id}` - Организации по виду деятельности
-- `GET /organizations/search/name?name={name}` - Поиск по названию
-- `GET /organizations/search/radius?latitude={lat}&longitude={lng}&radius_km={radius}` - Поиск в радиусе
-- `GET /organizations/search/rectangle?min_latitude={min_lat}&max_latitude={max_lat}&min_longitude={min_lng}&max_longitude={max_lng}` - Поиск в прямоугольной области
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/organizations` | Все организации |
+| GET | `/organizations/{id}` | Организация по ID |
+| GET | `/organizations/search/name?name={name}` | Поиск по названию |
+| GET | `/organizations/building/{building_id}` | Организации в здании |
+| GET | `/organizations/activity/{activity_id}` | Организации по виду деятельности |
+| GET | `/organizations/search/radius?latitude={lat}&longitude={lng}&radius_km={km}` | Поиск в радиусе |
+| GET | `/organizations/search/rectangle?min_latitude={min_lat}&max_latitude={max_lat}&min_longitude={min_lng}&max_longitude={max_lng}` | Поиск в области |
 
-### Здания
+### Справочники
 
-- `GET /buildings` - Список всех зданий
-- `GET /buildings/{id}` - Информация о здании по ID
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/buildings` | Все здания |
+| GET | `/activities` | Все виды деятельности |
 
-### Виды деятельности
+## Примеры запросов
 
-- `GET /activities` - Список всех видов деятельности
-- `GET /activities/{id}` - Информация о виде деятельности по ID
-
-## Примеры использования
-
-### Поиск организаций по виду деятельности
-
+### Получить все организации
 ```bash
-curl -H "X-API-Key: your-secret-api-key-here" \
-     "http://localhost:8000/organizations/activity/1"
-```
-
-### Поиск организаций в радиусе
-
-```bash
-curl -H "X-API-Key: your-secret-api-key-here" \
-     "http://localhost:8000/organizations/search/radius?latitude=55.7558&longitude=37.6176&radius_km=5"
+curl -H 'X-API-Key: api-key' http://localhost:8000/organizations
 ```
 
 ### Поиск по названию
-
 ```bash
-curl -H "X-API-Key: your-secret-api-key-here" \
-     "http://localhost:8000/organizations/search/name?name=Рога"
+curl -H 'X-API-Key: api-key' "http://localhost:8000/organizations/search/name?name=Рога"
+```
+
+### Поиск по виду деятельности
+```bash
+curl -H 'X-API-Key: api-key' http://localhost:8000/organizations/activity/1
+```
+
+### Поиск в радиусе
+```bash
+curl -H 'X-API-Key: api-key' "http://localhost:8000/organizations/search/radius?latitude=55.7558&longitude=37.6176&radius_km=5"
+```
+
+### Поиск в прямоугольной области
+```bash
+curl -H 'X-API-Key: api-key' "http://localhost:8000/organizations/search/rectangle?min_latitude=55.7&max_latitude=55.8&min_longitude=37.6&max_longitude=37.7"
 ```
 
 ## Структура данных
 
 ### Организация
-- `id` - Уникальный идентификатор
-- `name` - Название организации
-- `building_id` - ID здания
-- `phone_numbers` - Список номеров телефонов
-- `activities` - Список видов деятельности
+```json
+{
+  "id": 1,
+  "name": "ООО Рога и Копыта",
+  "phones": ["2-222-222", "3-333-333"],
+  "building": {
+    "id": 1,
+    "address": "г. Москва, ул. Ленина 1, офис 3",
+    "latitude": 55.7558,
+    "longitude": 37.6176
+  },
+  "activities": [
+    {
+      "id": 2,
+      "name": "Мясная продукция",
+      "parent_id": 1
+    }
+  ]
+}
+```
 
 ### Здание
-- `id` - Уникальный идентификатор
-- `address` - Адрес
-- `latitude` - Широта
-- `longitude` - Долгота
+```json
+{
+  "id": 1,
+  "address": "г. Москва, ул. Ленина 1, офис 3",
+  "latitude": 55.7558,
+  "longitude": 37.6176
+}
+```
 
 ### Вид деятельности
-- `id` - Уникальный идентификатор
-- `name` - Название
-- `parent_id` - ID родительского вида деятельности
-- `level` - Уровень вложенности (1-3)
-
-## Тестовые данные
-
-Приложение поставляется с тестовыми данными, включающими:
-- 5 зданий в Москве
-- 4 основных вида деятельности с иерархией до 3 уровней
-- 8 организаций с различными видами деятельности
-
-## Остановка сервисов
-
-```bash
-# Остановка Docker Compose
-docker-compose down
-
-# Остановка с удалением данных
-docker-compose down -v
+```json
+{
+  "id": 1,
+  "name": "Еда",
+  "parent_id": null,
+  "children": [
+    {
+      "id": 2,
+      "name": "Мясная продукция",
+      "parent_id": 1
+    }
+  ]
+}
 ```
 
-## Разработка
+## Особенности
 
-### Создание новой миграции
+- **Иерархический поиск**: Поиск по виду деятельности находит все подкатегории
+- **Геопространственный поиск**: Поиск по радиусу и прямоугольной области
+- **CORS поддержка**: Работает с веб-интерфейсом
+- **API Key аутентификация**: Статический ключ для доступа
 
-```bash
-alembic revision --autogenerate -m "Описание изменений"
-alembic upgrade head
-```
+## Файлы проекта
 
-### Добавление новых тестовых данных
+- `simple_app.py` - Основное приложение (HTTP сервер)
+- `advanced_test.html` - Веб-интерфейс для тестирования API
+- `README.md` - Документация
 
-Отредактируйте файл `seed_data.py` и выполните:
+## Технические детали
 
-```bash
-python seed_data.py
-```
-
-## Лицензия
-
-MIT License
+- **Язык**: Python 3
+- **HTTP сервер**: Встроенный `http.server`
+- **База данных**: In-memory (SQLite)
+- **Аутентификация**: API Key в заголовке `X-API-Key`
+- **Формат данных**: JSON

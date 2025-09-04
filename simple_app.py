@@ -213,7 +213,7 @@ import urllib.parse
 class APIHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         api_key = self.headers.get('X-API-Key')
-        if api_key != 'your-secret-api-key-here':
+        if api_key != 'api-key':
             self.send_response(401)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
@@ -315,10 +315,10 @@ def run_server():
     server_address = ('', 8000)
     httpd = HTTPServer(server_address, APIHandler)
     print("Сервер запущен на http://localhost:8000")
-    print("API ключ: your-secret-api-key-here")
+    print("API ключ: api-key")
     print("Примеры запросов:")
-    print("curl -H 'X-API-Key: your-secret-api-key-here' http://localhost:8000/organizations")
-    print("curl -H 'X-API-Key: your-secret-api-key-here' http://localhost:8000/organizations/search/name?name=Рога")
+    print("curl -H 'X-API-Key: api-key' http://localhost:8000/organizations")
+    print("curl -H 'X-API-Key: api-key' http://localhost:8000/organizations/search/name?name=Рога")
     print("Нажмите Ctrl+C для остановки")
     
     try:
