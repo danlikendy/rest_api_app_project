@@ -49,7 +49,7 @@ rest_api_app_project/
 ### 1. Клонирование и подготовка
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/danlikendy/rest_api_app_project
 cd rest_api_app_project
 ```
 
